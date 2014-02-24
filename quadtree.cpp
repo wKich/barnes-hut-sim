@@ -163,22 +163,55 @@ void QuadTree::movePlanet(Planet *p)
         putPlanetInChild(p);
         calcCenterOfMass();
     } else {
-        if (northWest->planet == nullptr && northEast->planet == nullptr &&
-            southWest->planet == nullptr && southEast->planet == nullptr &&
-            northWest->isLeaf && northEast->isLeaf &&
+        if (northWest->isLeaf && northEast->isLeaf &&
             southWest->isLeaf && southEast->isLeaf)
         {
-            delete northWest;
-            delete northEast;
-            delete southWest;
-            delete southEast;
-            northWest = nullptr;
-            northEast = nullptr;
-            southWest = nullptr;
-            southEast = nullptr;
-            isLeaf = true;
-            mass = 0;
-            centerOfMass = boundary.center();
+            int planets = 0;
+            QuadTree* child = nullptr;
+            if (northWest->planet != nullptr) {
+                planets++;
+                child = northWest;
+            }
+            if (northEast->planet != nullptr) {
+                planets++;
+                child = northEast;
+            }
+            if (southWest->planet != nullptr) {
+                planets++;
+                child = southWest;
+            }
+            if (southEast->planet != nullptr) {
+                planets++;
+                child = southEast;
+            }
+
+            if (planets == 1) {
+                planet = child->planet;
+                planet->leaf = this;
+                planets--;
+            }
+            if (planets == 0)
+            {
+                delete northWest;
+                delete northEast;
+                delete southWest;
+                delete southEast;
+                northWest = nullptr;
+                northEast = nullptr;
+                southWest = nullptr;
+                southEast = nullptr;
+                isLeaf = true;
+                if (planet != nullptr) {
+                    mass = planet->mass;
+                    centerOfMass = planet->currentPosition;
+                } else {
+                    mass = 0;
+                    centerOfMass = boundary.center();
+                }
+            } else {
+                mass -= p->mass;
+                calcCenterOfMass();
+            }
         } else {
             mass -= p->mass;
             calcCenterOfMass();

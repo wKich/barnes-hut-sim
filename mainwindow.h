@@ -12,8 +12,6 @@
 
 #include <QThread>
 
-#include <QDebug>
-
 #include "calcthread.h"
 
 class MainWindow : public QWindow

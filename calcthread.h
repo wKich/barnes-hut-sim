@@ -3,8 +3,6 @@
 
 #include <QObject>
 
-#include <QDebug>
-
 #include "quadtree.h"
 
 class CalcThread : public QObject
